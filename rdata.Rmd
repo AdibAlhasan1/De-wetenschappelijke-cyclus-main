@@ -1,0 +1,177 @@
+---
+title: "Onderzoek naar de correlatie tussen leeftijd en schoenmaat"
+output: html_document
+author: 'Jort, Mathijs, Adib, Bram'
+date: '24/4/2023'
+---
+
+### Onderzoeksvraag
+
+ 
+
+Is er een verschil in schoenmaat tussen verschillende sexe
+
+ 
+
+### hypothese
+
+ 
+
+Er is bij de mens een sexe-verschil in schoenmaat
+
+
+### nulhypothese
+
+er is geen verschil in schoenmaat tussen de sexe
+
+ 
+
+### experiment
+Ons plan om ons onderzoeksvraag te beantwoorden van is er  een verschil in schoenmaat bij mensen met een sexeverschil. Dit beantwoorden we door 20 mannen en 20 vrouwen te vragen wat hun schoenmaat is.
+
+ 
+
+### Protocol
+
+ 
+
+### Benodigheden
+1. stem
+2. vraag
+
+ 
+
+### Data verzamelen
+
+ 
+
+we Zoeken samen met ons groepje van de klas, in of rond het schoolgebouw medestudenten. we Vragen beleefd of ze willen participeren in een klein wetenschappelijk onderzoekje voor school waarbij de maten van de schoen en leeftijd zullen worden opgenomen.
+Is het antwoord nee, dan groet je vriendelijk en zoek je verder.
+Is het antwoord ja, dan vraag je of de proefpersoon zijn schoenmaat en leeftijd wil vertellen. Deze leggen we vast in onze spreadsheet, samen met een laborant-ID  van de proefpersoon. Ten slotte vraag je aan de proefpersoon zijn/haar sexe en legt deze vast. Wil de proefpersoon deze niet geven, of is die nonbinair, dan leggen we dit vast als “anders/onbekend”. Bedank de proefpersoon voor deelname.
+Wissel de metingen af tussen de verschillende studenten in jouw groepje.
+
+
+We gaan door totdat we ten minste 40 proefpersonen de gegevens zijn verzameld.
+
+### Data-analyse en interpretatie
+
+We gebruiken geschikte statistische tests om onze onderzoeksvraag te beantwoorden en onze hypothese te testen. Om te onderzoeken of er een verschil is in schoenmaat tussen mannen en vrouwen, gebruiken we een t-test voor onafhankelijke steekproeven. Als de t-test significant is, betekent dit dat er een verschil is in schoenmaat tussen mannen en vrouwen. Om de sterkte van de correlatie tussen leeftijd en schoenmaat te bepalen, gebruiken we de Pearson-correlatiecoëfficiënt. Als de correlatie significant is, betekent dit dat er een lineair verband is tussen leeftijd en schoenmaat. We interpreteren onze bevindingen en trekken conclusies op basis van de resultaten van deze statistische tests.
+
+
+```{r visualize, echo = FALSE}
+library(ggplot2)
+# Load the data
+biometric_data <- read.table(file = "schoenmaat.csv",
+                             header = TRUE,
+                             sep = ",")
+ 
+# Create a scatterplot of Schoenmaat vs. Leeftijd
+ggplot(biometric_data, aes(x = Leeftijd, y = Schoenmaat)) +
+  geom_point() +
+  stat_summary(aes(group = Leeftijd), fun = mean, geom = "point", size = 3, color = "red") +
+  labs(x = "Leeftijd", y = "Schoenmaat", title = "Schoenmaat vs. Leeftijd")
+```
+
+
+
+```{r visualize2, echo = FALSE}
+ggplot(biometric_data,
+       mapping = aes(x = Schoenmaat, fill = Sexe)) +
+    geom_histogram(bins = 10, colour = "black") + # histogram layer with 10 bins
+    facet_wrap(~ Sexe) +                       # split plots over gender
+    labs(x = "Schoenmaat", y = "Frequency", title = "Hoevaak komt dezelfde schoenmaat voor bij dezelfde leeftijd") +  # labels for x-axis and y-axis
+    theme_minimal()
+
+```
+
+
+```{r visualize 3, echo = FALSE}
+library(ggplot2)
+ 
+#Load the data
+biometric_data <- read.table(file = "schoenmaat.csv",
+ header = TRUE,
+ sep = ",")
+ 
+# maak de plot en voeg lagen toe
+ggplot(biometric_data, 
+      mapping = aes(x = Sexe, y = Schoenmaat, fill = Sexe)) +
+      geom_boxplot() + # boxplot visualisatie
+      labs(x = "Sexe", y = "Schoenmaat", title= "Schoenmaat bij mannen vs vrouwen") + # as-labels
+      theme_minimal() # beetje schoner plotje maken
+```
+
+
+ 
+```{r visualize 4, echo = FALSE}
+library(ggplot2)
+ 
+#Load the data
+biometric_data <- read.table(file = "schoenmaat.csv",
+ header = TRUE,
+ sep = ",")
+ 
+# maak de plot en voeg lagen toe
+ggplot(biometric_data, mapping = aes(x = Sexe, y = Leeftijd, fill = Sexe)) +
+ geom_boxplot() + # boxplot visualisatie
+ labs(x = "Sexe", y = "Leeftijd", title= "Leeftijd bij mannen vs vrouwen") + # as-labels
+ theme_minimal() # beetje schoner plotje maken
+```
+
+
+
+
+
+
+
+```{r visualize 5, echo = FALSE}
+shapiro.test(biometric_data$Schoenmaat)
+shapiro.test(biometric_data$Leeftijd)
+
+female_ratios <- subset(biometric_data, 
+                        subset = Sexe == "v", 
+                        select = Schoenmaat, 
+                        drop = T) # drop = T forces ro a vector
+male_ratios <- subset(biometric_data, 
+                        subset = Sexe == "m", 
+                        select = Schoenmaat, 
+                        drop = T)
+t.test(female_ratios, male_ratios)
+
+wilcox.test(Schoenmaat ~ Sexe, data = biometric_data, paired = FALSE)
+```
+
+
+## reflectie
+
+Het verschil tussen mannen en vrouwen met de schoenmaat is wel sitgnificant verschillend. Mannen hebben gemiddeld
+een schoenmaat van 4-5 meer dan vrouwen. De leeftijd is niet significant tot de schoenmaat, want er is geen duidelijk verschil in grootte
+van schoenmaat bij mensen die ouder zijn dan de rest. we zouden de verschil in schoenmaat kunnen verklaren door het feit dat mannen andere hormonen hebben dan vrouwen.
+Het hormoon wat zorgt voor onder andere grotere voeten is testosteron. Dit hormoon zorgt voor betere groei en ontwikkeling van de botten, en dus ook grotere voeten.
+
+De P bij leeftijd is significant verschillend, dit komt omdat bij de mannen we de eerstejaars groep voor het grootste gedeelte hebben gevraagd.
+Daarna hebben we een willekeurige groep gevraagd in de kantine die uit verschillende jaren kunnen komen, waardoor de P significant verschilt van de normale verdeling.
+
+De data van ons onderzoek zouden we veranderen doordat leeftijd geen relatie heeft in schoenmaat, dus daardoor zouden wij dit dit protocol
+aanpassen als we het nog een keer gaan doen en leeftijd vervangen met de lengte van de persoon in centimeters.
+
+Vervolgens hebben we deze dataset geanalyseerd en gevisualiseerd met behulp van R.
+
+Een van de visualisaties die we hebben gemaakt was een scatterplot van schoenmaat tegen leeftijd, waarbij we ook de gemiddelde schoenmaat per leeftijdsgroep hebben weergegeven. Hieruit bleek dat er geen duidelijk verband bestaat tussen schoenmaat en leeftijd.
+
+Een andere visualisatie was een histogram van schoenmaten, opgesplitst per geslacht. Hieruit bleek dat mannen over het algemeen grotere schoenmaten hebben dan vrouwen.
+
+Om dit verder te onderzoeken hebben we ook boxplots gemaakt van de schoenmaten en leeftijden, opgesplitst per geslacht. Hieruit bleek dat mannen inderdaad over het algemeen grotere schoenmaten hebben dan vrouwen, maar dat er geen duidelijk verschil is in leeftijd tussen mannen en vrouwen.
+
+
+
+## conclusie
+
+Onze hypothese van dat mannen een grotere gemiddelde schoenmaat hebben vergeleken met vrouwen is correct. Daarbij is de nulhypothese verworpen aangezien deze
+erop duidde dat er juist geen verschil zou zijn in schoenmaat. In de grafieken kun je boxplots zien waarin het verschil en uitschieters bij leeftijd en schoenmaat
+te zien valt. De mediaan valt ook te zien, in de vorm van een streep binnenin de plots. Er is ook een bargraph te zien, waarin de frequenties te zien zijn van de 
+verschillende schoenmaten. Deze is verdeeld in sexe. Naast deze grafieken is er ook nog een dotmatrix, waarin de verschillende schoenmaten en leeftijden worden weergeven.
+Deze zijn gelinkt in deze grafiek, en je kunt duidelijk uitschieters zien. Ook is er een trendlijn zichtbaar.
+
+
+
